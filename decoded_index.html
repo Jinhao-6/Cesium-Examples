@@ -1,0 +1,1958 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>低空经济可视化AI决策平台</title>
+    <link rel="stylesheet" href="css/reset.css" />
+    <link rel="stylesheet" href="css/new_index.css" />
+    <link
+      rel="stylesheet"
+      href="./../../../../libs/cesium/Cesium1.98/Widgets/widgets.css"
+    />
+    <script
+      type="text/javascript"
+      src="./../../../../libs/cesium/Cesium1.98/Cesium.js"
+    ></script>
+
+    <script src="./../../cesium.map.min.js"></script>
+    <script src="./../../CircleScanSystem.js"></script>
+    <script src="./../../CircleWaveMaterialProperty.js"></script>
+    <script src="./../../DynamicWallMaterialProperty.js"></script>
+    <script src="./../..//popup.js"></script>
+    <script src="./../../latlng.js"></script>
+
+    <style>
+      .cesium-widget-credits {
+        display: none !important;
+      }
+
+      /* ---public---- */
+      .centerBox {
+        width: 75%;
+        margin-right: 15px;
+        background: transparent;
+      }
+
+      .boxFont {
+        font-size: 1.2vw;
+      }
+
+      .centerMainBox1 {
+        width: 100%;
+        height: 60.5%;
+      }
+
+      .centerMainBox2 {
+        width: 100%;
+        height: 38%;
+        position: relative;
+        margin-top: 15px;
+      }
+
+      .centerMainBox2 .first_border {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+      }
+
+      .boxTitle2 {
+        width: 100%;
+        height: 10%;
+        font-size: 0.6vw;
+        text-align: center;
+        line-height: 10%;
+        margin-top: 1vw;
+        color: #0efcff;
+      }
+
+      .contList {
+        position: relative;
+        width: 70%;
+        height: 8vw;
+        margin: 1vw auto 0;
+      }
+
+      .content1 li {
+        display: none;
+      }
+
+      .baseBox {
+        width: 100%;
+        border: none;
+        background: none;
+      }
+
+      .boxTitle {
+        font-size: 0.8vw;
+        width: 38%;
+        margin-top: 1vw;
+        text-align: center;
+      }
+
+      .right {
+        float: right;
+      }
+
+      .baseBoxLeft {
+        width: 30%;
+        height: 95%;
+        position: relative;
+      }
+
+      .baseBoxRight {
+        width: 68%;
+        height: 100%;
+      }
+
+      .baseBoxLeft .first_border {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+      }
+
+      .baseBox1,
+      .baseBox2,
+      .baseBox3 {
+        position: relative;
+      }
+
+      .baseBox1 .hardware,
+      .baseBox2 img,
+      .baseBox3 img {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+      }
+
+      .csbaseBox1 {
+        position: relative;
+        z-index: 999;
+      }
+
+      #canvas {
+        display: block;
+        margin: 0 auto;
+        width: 10vw;
+        height: 5vw;
+      }
+
+      .progress {
+        position: relative;
+      }
+
+      .progress img {
+        width: 12.5vw;
+        height: 2vw;
+        position: absolute;
+        top: 0.4vw;
+        right: -0.2vw;
+      }
+
+      .progress .disease {
+        position: absolute;
+        top: 0.7vw;
+        left: 0.5vw;
+        color: #fff;
+        font-size: 0.8vw;
+      }
+
+      .progress .similar {
+        position: absolute;
+        top: 0.8vw;
+        left: 3vw;
+        color: #0efcff;
+        font-size: 0.5vw;
+      }
+
+      /* 返回图标 */
+      .navLeft {
+        position: absolute;
+        top: 5%;
+        left: 35%;
+        width: 3.5%;
+        height: 8%;
+        z-index: 999;
+      }
+
+      .navLeft > img {
+        width: 100%;
+        height: 100%;
+      }
+    </style>
+    <style>
+      .cesium-viewer-bottom,
+      .cesium-viewer-animationContainer,
+      .cesium-animation-theme,
+      .cesium-viewer-timelineContainer {
+        display: none;
+      }
+
+      .bx-popup-ctn2 {
+        position: absolute;
+        z-index: 999;
+        color: #fff;
+        /* margin: -80px 0 0; */
+        margin: 0 0 0 0;
+        transform: translate(-50%, -100%);
+      }
+
+      .bx-popup-ctn2 .divpoint-wrap {
+        padding: 0;
+        width: max-content;
+      }
+
+      .bx-popup-ctn2 .divpoint-center {
+        background: linear-gradient(
+          45deg,
+          #4f869d,
+          rgba(18, 93, 120, 0.65),
+          40%,
+          rgba(30, 127, 162, 0.65)
+        );
+        border: 1px solid #40aee2;
+        border-radius: 5px;
+        box-shadow: 0 0 10px 2px #29baf1;
+      }
+
+      .bx-popup-ctn2 .bx-popup-tip {
+        width: 17px;
+        background: #fff;
+        height: 17px;
+        padding: 1px;
+        margin: -10px auto 0;
+        -webkit-transform: rotate(45deg);
+        -moz-transform: rotate(45deg);
+        -ms-transform: rotate(45deg);
+        transform: rotate(45deg);
+      }
+
+      .bx-popup-ctn2 .bx-popup-header-ctn {
+        background: rgba(0, 173, 255, 0.49);
+        color: #fff;
+        font-size: 15px;
+        padding: 4px;
+      }
+
+      .bx-popup-ctn2 .bx-popup-close {
+        position: absolute;
+        top: 4px;
+        right: 2px;
+        width: 26px;
+        height: 26px;
+        cursor: pointer;
+      }
+
+      .bx-popup-ctn2 .bx-popup-content-ctn {
+        padding: 10px;
+      }
+
+      .bx-popup-ctn2 .directional {
+        bottom: 0;
+        left: 0;
+        width: 2px;
+        height: 40px;
+        background-color: #28bbf0;
+        transform: none;
+        margin: 0 0 0px 50%;
+      }
+
+      .bx-popup-ctn2 .divpoint-border {
+        transition: 0.3s ease-in;
+        background: linear-gradient(0, #8cdee5 2px, #8cdee5 0) no-repeat,
+          linear-gradient(-90deg, #8cdee5 2px, #8cdee5 0) no-repeat,
+          linear-gradient(-180deg, #8cdee5 2px, #8cdee5 0) no-repeat,
+          linear-gradient(-270deg, #8cdee5 2px, #8cdee5 0) no-repeat;
+        background-size: 0 2px, 2px 0, 0 2px, 2px 0;
+        background-position: 0 0, 100% 0, 100% 100%, 0 100%;
+      }
+
+      .bx-popup-ctn2 .divpoint-border:hover {
+        background-size: 100% 2px, 2px 100%, 100% 2px, 2px 100%;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="main">
+      <div class="nav" style="font-weight: 700">
+        低空经济可视化AI决策平台
+      </div>
+      <div class="nav_btn">
+        <div class="btn_left">
+          <a href="https://github.com/jiawanlong/Cesium-Examples">
+            <div class="btn_list listActive">主页</div>
+          </a>
+          <a href="https://github.com/jiawanlong/Cesium-Examples">
+            <div class="btn_list">协同控制</div>
+          </a>
+          <a href="https://github.com/jiawanlong/Cesium-Examples">
+            <div class="btn_list">航线规划</div>
+          </a>
+          <a href="https://github.com/jiawanlong/Cesium-Examples">
+            <div class="btn_list">飞行报告</div>
+          </a>
+        </div>
+        <div class="btn_right">
+          <a href="https://github.com/jiawanlong/Cesium-Examples">
+            <div class="btn_list">智能分析</div>
+          </a>
+          <a href="https://github.com/jiawanlong/Cesium-Examples">
+            <div class="btn_list">AI%u51B3%u7B56</div>
+          </a>
+          <a href="https://github.com/jiawanlong/Cesium-Examples">
+            <div class="btn_list">应急响应</div>
+          </a>
+          <a href="https://github.com/jiawanlong/Cesium-Examples">
+            <div class="btn_list">系统管理</div>
+          </a>
+        </div>
+      </div>
+      <div class="content">
+        <div class="centerBox">
+          <div class="baseBox centerMainBox1" style="height: 70%">
+            <div class="baseBoxLeft left">
+              <div class="boxTitle">
+                %u8336%u53F6%u75C5%u866B%u5BB3%u9884%u8B66
+              </div>
+              <img src="img/left.png" class="first_border" alt="" />
+              <div class="firstBox">
+                <div class="pic">
+                  <img src="img/1.jpg" class="first_top1" alt="" />
+                  <img src="img/2.jpg" class="first_top2" alt="" />
+                </div>
+                <div class="picText">
+                  <span>%u6C83%u5C14%u739B%u53D1%u751F%u706B%u707E </span>
+                  <span class="text_second"
+                    >%u4EC1%u548C%u8DEF%u53D1%u751F%u6253%u67B6%u6597%u6BB4</span
+                  >
+                </div>
+                <div class="voice_animation">
+                  <canvas id="canvas"
+                    >Your browser can not support canvas</canvas
+                  >
+                </div>
+                <div class="progress">
+                  <span class="disease">%u98DE%u884C%u7387</span>
+                  <!-- <i class="counter-value">85</i>% -->
+                  <span class="similar">%u5B8C%u6210%u5EA6:85%</span>
+                  <img src="img/progress.gif" alt="" />
+                </div>
+                <div class="about_illness">
+                  <div class="symptom">
+                    <div class="symptom_title">%u706B%u707E%u5904%u7F6E</div>
+                    <div class="symptom_content">
+                      %u5DF2%u81EA%u52A8%u62E8%u901A119%uFF0C120%uFF0C110%u7B49%uFF0C%u73B0%u573A%u706B%u60C5%u5DF2%u5F97%u5230%u63A7%u5236%uFF0C%u65E0%u4EBA%u5458%u4F24%u4EA1%u3002
+                    </div>
+                  </div>
+                  <div class="prevent">
+                    <div class="prevent_title">%u6253%u67B6%u5904%u7F6E</div>
+                    <div class="prevent_content">
+                      %u5DF2%u81EA%u52A8%u547C%u53EB%u6700%u8FD1%u7684%u8B66%u52A1%u5BA4%uFF0C%u73B0%u573A%u6253%u67B6%u6597%u6BB4%u5DF2%u5F97%u5230%u63A7%u5236%uFF0C%u6709%u65B0%u7684%u589E%u63F4%u4EBA%u5458%u5230%u8FBE%u73B0%u573A%u3002
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="baseBoxRight right">
+              <!-- <a class="navLeft" href="https://github.com/jiawanlong/Cesium-Examples"><img style=""
+                                src="img/fanhui.png" alt=""></a> -->
+
+              <!-- %u5730%u56FE -->
+              <div class="maps" id="map"></div>
+            </div>
+          </div>
+
+          <!-- %u5DE6%u4FA7%u4E0B%u90E8 -->
+          <div class="baseBox centerMainBox2" style="height: 30%">
+            <img src="img/down2.png" class="first_border" alt="" />
+            <div class="boxTitle2" style="width: 26%">
+              %u65E0%u4EBA%u673A%u98DE%u884C%u59FF%u6001
+            </div>
+            <div
+              class="boxTitle2"
+              style="width: 26%; margin-left: 22vw; margin-top: -1.4vw"
+            >
+              %u98DE%u884C%u76D1%u63A7
+            </div>
+            <div
+              class="boxTitle2"
+              style="width: 26%; margin-left: 53vw; margin-top: -1.4vw"
+            >
+              %u98DE%u884C%u533A%u57DF%u8BE6%u7EC6%u6570%u636E
+            </div>
+            <div class="leftBottom">
+              <div class="land_data">
+                <p>x 115.3224</p>
+                <p>y 32.8621</p>
+                <p>z 1200</p>
+              </div>
+            </div>
+            <div class="right_box">
+              <div class="grow_data">
+                <video
+                  src="./video.mp4"
+                  loop
+                  id="video"
+                  autoplay
+                  style="margin-left: -10%; width: 100%; height: 100%"
+                ></video>
+              </div>
+              <div class="weather_data">
+                <div class="weather_text text_one">
+                  <span>%u6E29%u5EA6%uFF1A19%u2103</span>
+                  <span>%u6E7F%u5EA6%uFF1A52%</span>
+                  <span>%u98CE%u5411%uFF1A%u4E1C%u5357%u98CE</span>
+                  <span>%u98CE%u901F%uFF1A2m/s</span>
+                </div>
+                <div class="weather_text text_two">
+                  <span>%u964D%u96E8%u91CF%uFF1A0mm</span>
+                  <span>%u84B8%u53D1%u91CF%uFF1A0.326mm/h</span>
+                  <span>%u6C14%u538B%uFF1A0.326MPa</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="leftBox right" style="width: 22%">
+          <div
+            class="baseBox baseBox1"
+            style="margin-bottom: 15px; height: 40%"
+          >
+            <img src="img/right.png" class="hardware" alt="" />
+            <div class="csbaseBox1">
+              <div class="boxTitle">%u786C%u4EF6%u8BBE%u5907%u5C55%u793A</div>
+              <ul class="boxLis">
+                <li class="left active">%u56DB%u8F74%u65E0%u4EBA%u673A</li>
+                <li class="left">%u76D1%u63A7%u6444%u50CF%u5934</li>
+                <li class="left">AI%u4F20%u611F%u5668</li>
+                <li class="left">%u706B%u60C5%u68C0%u6D4B%u4EEA</li>
+              </ul>
+              <div class="content1">
+                <ul>
+                  <li style="display: block" class="contList">
+                    <!-- %u56DB%u4E2A%u89D2%u63CF%u8FB9 stat -->
+                    <div class="leftTopLine1"></div>
+                    <div class="leftTopLine2"></div>
+                    <div class="rightTopLine1"></div>
+                    <div class="rightTopLine2"></div>
+                    <div class="leftBottomLine1"></div>
+                    <div class="leftBottomLine2"></div>
+                    <div class="rightBottomLine1"></div>
+                    <div class="rightBottomLine2"></div>
+
+                    <div class="equipment_pic">
+                      <img class="first" src="img/uva.png" alt="" />
+                      <img class="second" src="img/control.png" alt="" />
+                      <img class="third" src="img/camera.png" alt="" />
+                      <img class="fourth" src="img/detector.png" alt="" />
+                    </div>
+                  </li>
+                </ul>
+              </div>
+              <div class="liSpan">%u4ECB%u7ECD</div>
+              <p class="liP">
+                %u6E90%u7801%uFF1Ahttps://github.com/jiawanlong/Cesium-Examples
+              </p>
+            </div>
+          </div>
+          <div
+            class="baseBox baseBox2"
+            style="margin-bottom: 15px; height: 29.5%"
+          >
+            <img src="img/right2.png" alt="" />
+            <!-- %u56DB%u4E2A%u89D2%u63CF%u8FB9 end -->
+            <div class="boxTitle2">%u5B9E%u65F6%u5DE1%u68C0</div>
+            <div class="irrigate_data">
+              <div class="irrigate_top">
+                <div class="centerList">
+                  <div class="centerListFont">%u7535%u6C60%u7535%u91CF</div>
+                  <div class="centerListNum">
+                    <span class="">80%</span>
+                  </div>
+                </div>
+                <div class="centerList">
+                  <div class="centerListFont">
+                    %u53EF%u98DE%u65F6%u957F%uFF08h%uFF09
+                  </div>
+                  <div class="centerListNum">
+                    <span class="">3.29</span>
+                  </div>
+                </div>
+              </div>
+              <div class="irrigate_bottom">
+                <div class="every_line">
+                  <span>覆盖范围（M²）</span>
+                  <i class="">8725.78</i>
+                </div>
+                <div class="every_line">
+                  <span>巡检事件</span>
+                  <i class="counter-valu1e">29</i>
+                  <!-- <i class="counter-value">2</i> -->
+                </div>
+                <div class="every_line">
+                  <span>%u8986%u76D6%u5C0F%u533A%u6570</span>
+                  <i>230</i>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="baseBox baseBox3" style="height: 28%">
+            <img src="img/right3.png" alt="" />
+            <!-- %u56DB%u4E2A%u89D2%u63CF%u8FB9 end -->
+            <div class="boxTitle2">%u98DE%u884C%u65E5%u5FD7</div>
+            <!-- <div class="data_day" id="demo" > -->
+            <div
+              class="data_day"
+              id="demo"
+              style="width: 100%; overflow: hidden; height: 75%"
+            >
+              <table style="text-align: left; margin-left: 10%; height: 80%">
+                <tbody id="demo1">
+                  <!-- <tr class="head">
+                                    <td>%u7F16%u53F7</td>
+                                    <td>%u6570%u636E%u7C7B%u578B</td>
+                                    <td>%u6570%u636E%u503C</td>
+                                    <td>%u65F6%u95F4</td>
+                                </tr> -->
+                  <tr>
+                    <td>u78</td>
+                    <td>%u4F20%u611F%u5668%u6570%u636E</td>
+                    <td>163.28</td>
+                    <td>2025%u5E7410%u670826%u65E5</td>
+                  </tr>
+
+                  <tr>
+                    <td>006</td>
+                    <td>%u65E0%u4EBA%u673A%u6570%u636E</td>
+                    <td>130.67</td>
+                    <td>2025%u5E7410%u670825%u65E5</td>
+                  </tr>
+
+                  <tr>
+                    <td>s07</td>
+                    <td>%u63A7%u5236%u5668%u6570%u636E</td>
+                    <td>163.28</td>
+                    <td>2025%u5E7410%u670825%u65E5</td>
+                  </tr>
+                  <tr>
+                    <td>872</td>
+                    <td>%u76D1%u89C6%u5668%u6570%u636E</td>
+                    <td>130.67</td>
+                    <td>2025%u5E7410%u670824%u65E5</td>
+                  </tr>
+                  <tr>
+                    <td>d59</td>
+                    <td>%u9065%u611F%u5F71%u50CF%u6570%u636E</td>
+                    <td>163.28</td>
+                    <td>2025%u5E7410%u670823%u65E5</td>
+                  </tr>
+
+                  <tr>
+                    <td>299</td>
+                    <td>%u98DE%u884C%u53C2%u6570%u6570%u636E</td>
+                    <td>130.67</td>
+                    <td>2025%u5E7410%u670823%u65E5</td>
+                  </tr>
+                  <tr>
+                    <td>256</td>
+                    <td>%u4F20%u611F%u5668%u6570%u636E</td>
+                    <td>163.28</td>
+                    <td>2025%u5E7410%u670822%u65E5</td>
+                  </tr>
+                  <tr>
+                    <td>026</td>
+                    <td>%u65E0%u4EBA%u673A%u6570%u636E</td>
+                    <td>130.67</td>
+                    <td>2025%u5E7410%u670820%u65E5</td>
+                  </tr>
+                  <tr>
+                    <td>037</td>
+                    <td>%u4F20%u611F%u5668%u6570%u636E</td>
+                    <td>163.28</td>
+                    <td>2025%u5E7410%u670822%u65E5</td>
+                  </tr>
+                </tbody>
+                <tbody
+                  id="demo2"
+                  style="text-align: left; margin-left: 10%"
+                ></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="js/jquery.min.js"></script>
+    <script src="js/echarts.min.js"></script>
+    <script src="js/dataScoll.js"></script>
+    <!-- %u6587%u5B57%u6EDA%u52A8 -->
+    <script language="javascript" type="text/javascript">
+      var demo = document.getElementById('demo');
+      var demo1 = document.getElementById('demo1');
+      var demo2 = document.getElementById('demo2');
+      var speed = 15; //%u6EDA%u52A8%u901F%u5EA6%u503C%uFF0C%u503C%u8D8A%u5927%u901F%u5EA6%u8D8A%u6162
+      demo2.innerHTML = demo1.innerHTML; //%u514B%u9686demo2%u4E3Ademo1
+      function Marquee() {
+        if (demo2.offsetTop - demo.scrollTop <= 45) {
+          demo.scrollTop -= demo1.offsetHeight; //demo%u8DF3%u5230%u6700%u9876%u7AEF
+        } else {
+          demo.scrollTop++;
+        }
+      }
+      var MyMar = setInterval(Marquee, speed); //%u8BBE%u7F6E%u5B9A%u65F6%u5668
+      demo.onmouseover = function () {
+        clearInterval(MyMar);
+      }; //%u9F20%u6807%u7ECF%u8FC7%u65F6%u6E05%u9664%u5B9A%u65F6%u5668%u8FBE%u5230%u6EDA%u52A8%u505C%u6B62%u7684%u76EE%u7684
+      demo.onmouseout = function () {
+        MyMar = setInterval(Marquee, speed);
+      }; //%u9F20%u6807%u79FB%u5F00%u65F6%u91CD%u8BBE%u5B9A%u65F6%u5668
+    </script>
+    <!-- <script type="text/javascript" src="js/digitalScroll.js"></script> -->
+    <script>
+      var doublePI = Math.PI * 2;
+      var canvas;
+      var ctx;
+
+      //%u753B%u5E03%u7684%u9AD8%u5EA6%u7684%u4E00%u534A
+      var halfCanvasHeight = 100;
+      //%u6C34%u5E73%u8FB9%u8DDD
+      var horizontalMargin = 150;
+
+      //%u8870%u51CF%u7CFB%u6570(%u8D8A%u5927, %u8FB9%u7F18%u8870%u51CF%u7684%u5C31%u8D8A%u591A, %u9707%u52A8%u5BBD%u5EA6%u76F8%u5E94%u4E5F%u8D8A%u7A84)
+      var attenuationCoefficient = 2;
+      //%u534A%u6CE2%u957F%u4E2A%u6570-1
+      var halfWaveCount = 20;
+      //%u632F%u5E45%u662F%u753B%u5E03%u9AD8%u5EA6%u7684%u4E00%u822C%u7684%u767E%u5206%u6BD4[0,1]
+      var amplitudePercentage = 0.3;
+      //%u6BCF%u5E27%u589E%u52A0%u7684%u5F27%u5EA6[0,2PI](%u4F5C%u7528%u4E8Esin%u66F2%u7EBF, %u6B63%u503C%u76F8%u5F53%u4E8E%u539F%u70B9%u53F3%u79FB, %u66F2%u7EBF%u5DE6%u79FB)
+      var radianStep = 0.4;
+
+      //%u5F53%u524D%u5F27%u5EA6%u7684%u504F%u79FB
+      var radianOffset = 0;
+      //%u753B%u5E03%u5BBD%u5EA6
+      var canvasWidth;
+
+      function init() {
+        canvas = document.getElementById('canvas');
+        ctx = canvas.getContext('2d');
+        window.addEventListener('resize', onResize);
+
+        canvas.height = halfCanvasHeight * 2;
+        onResize();
+        loop();
+      }
+
+      function onResize() {
+        //%u5143%u7D20%u7684%u5927%u5C0F%u4E0D%u80FD%u52A0%u5355%u4F4D, %u5355%u4F4D%u9ED8%u8BA4%u5C31%u662F%u50CF%u7D20, %u800Cstyle%u4E2D%u7684%u957F%u5EA6%u8981%u52A0%u5355%u4F4D
+        canvasWidth = canvas.width = window.innerWidth - horizontalMargin;
+      }
+
+      //%u8BBEK=attenuationCoefficient, %u8BA1%u7B97%u4FE1%u53F7%u8870%u51CF (4K/(4K+x^4))^2K<=1 (x belong [-K,K])
+      function calcAttenuation(x) {
+        return Math.pow(
+          (4 * attenuationCoefficient) /
+            (4 * attenuationCoefficient + Math.pow(x, 4)),
+          2 * attenuationCoefficient,
+        );
+      }
+
+      //heightPercentage%u4E3A%u632F%u5E45%u7684%u663E%u793A%u6BD4%u4F8B
+      function drawAcousticWave(heightPercentage, alpha, lineWidth) {
+        ctx.strokeStyle = 'white';
+        ctx.globalAlpha = alpha;
+        ctx.lineWidth = lineWidth || 1;
+        ctx.beginPath();
+        ctx.moveTo(0, halfCanvasHeight);
+        var x, y;
+        for (
+          var i = -attenuationCoefficient;
+          i <= attenuationCoefficient;
+          i += 0.01
+        ) {
+          //i%u662F%u5F53%u524D%u4F4D%u7F6E%u76F8%u5BF9%u4E8E%u6574%u4E2A%u957F%u5EA6%u7684%u6BD4%u7387( x=width*(i+K)/(2*K))
+          x =
+            (canvasWidth * (i + attenuationCoefficient)) /
+            (2 * attenuationCoefficient);
+          //%u52A0offset%u76F8%u5F53%u4E8E%u628Asin%u66F2%u7EBF%u5411%u53F3%u5E73%u79FB
+          y =
+            halfCanvasHeight +
+            halfCanvasHeight *
+              amplitudePercentage *
+              calcAttenuation(i) *
+              heightPercentage *
+              Math.sin(halfWaveCount * i + radianOffset);
+          ctx.lineTo(x, y);
+        }
+        ctx.stroke();
+      }
+
+      function loop() {
+        radianOffset = (radianOffset + radianStep) % doublePI;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        drawAcousticWave(1, 1, 2);
+        for (var i = 2; i < 4; i++) {
+          var reciprocal = 1 / i;
+          drawAcousticWave(reciprocal, reciprocal / 4);
+          drawAcousticWave(-reciprocal, reciprocal / 4);
+        }
+        requestAnimationFrame(loop);
+      }
+
+      init();
+      setInterval(function () {
+        numInit();
+      }, 6500);
+
+      // mark center display
+      $('.peasant').mouseenter(function () {
+        // console.log(111)
+        // console.log($('.window_two'))
+        $('.window_two').removeClass('display_box');
+      });
+      $('.peasant').mouseout(function () {
+        $('.window_two').addClass('display_box');
+      });
+
+      $('.land_box1').mouseenter(function () {
+        // console.log(15556)
+        $('.windows').removeClass('display_box');
+      });
+      $('.land_box2').mouseenter(function () {
+        // console.log(15556)
+        $('.windows').removeClass('display_box');
+      });
+      $('.land_box3').mouseenter(function () {
+        // console.log(15556)
+        $('.windows').removeClass('display_box');
+      });
+      $('.land_box4').mouseenter(function () {
+        // console.log(15556)
+        $('.windows').removeClass('display_box');
+      });
+
+      $('.land_box1').mouseout(function () {
+        $('.windows').addClass('display_box');
+      });
+      $('.land_box2').mouseout(function () {
+        $('.windows').addClass('display_box');
+      });
+      $('.land_box3').mouseout(function () {
+        $('.windows').addClass('display_box');
+      });
+      $('.land_box4').mouseout(function () {
+        $('.windows').addClass('display_box');
+      });
+
+      $('.plant').mouseenter(function () {
+        $('.plant_pic').removeClass('display_box');
+        $('.window_five').removeClass('display_box');
+      });
+      $('.plant').mouseout(function () {
+        $('.plant_pic').addClass('display_box');
+        $('.window_five').addClass('display_box');
+      });
+
+      $('.soil_data').mouseenter(function () {
+        $('.window_three').removeClass('display_box');
+      });
+      $('.soil_data').mouseout(function () {
+        $('.window_three').addClass('display_box');
+      });
+
+      $('.weather_info').mouseenter(function () {
+        $('.window_four').removeClass('display_box');
+      });
+      $('.weather_info').mouseout(function () {
+        $('.window_four').addClass('display_box');
+      });
+
+      $('.wrj_pic').mouseenter(function () {
+        $('.window_six').removeClass('display_box');
+      });
+      $('.wrj_pic').mouseout(function () {
+        $('.window_six').addClass('display_box');
+      });
+
+      $('.boxLis').on('mouseenter', 'li', function () {
+        var that = $(this);
+
+        that.addClass('active').siblings().removeClass('active');
+
+        $('.equipment_pic img').hide();
+
+        $('.equipment_pic img').eq(that.index()).show();
+      });
+
+      setInterval(function () {
+        numInit();
+        numInit1();
+        numInit2();
+        var video = document.getElementById('video');
+        video.play();
+      }, 6000);
+    </script>
+    <script type="text/javascript">
+      setTimeout(function () {
+        var video = document.getElementById('video');
+        video.play();
+      }, 3000);
+      Cesium.Ion.defaultAccessToken =
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIyNDMxOTA2NS1lY2Q3LTQ0YmUtOTE1Mi1iNWE2OGYwZjc0MjkiLCJpZCI6MjM1NjMwLCJpYXQiOjE3MzA3MjQzMTJ9.Xhu-9FyVEyqBKWEr0V9Sybt-elTCWHt9peL9-mNh-4E';
+      const viewer = new Cesium.Viewer('map', {
+        animation: true, //%u662F%u5426%u521B%u5EFA%u52A8%u753B%u5C0F%u5668%u4EF6%uFF0C%u5DE6%u4E0B%u89D2%u4EEA%u8868
+
+        baseLayerPicker: false, //%u662F%u5426%u663E%u793A%u56FE%u5C42%u9009%u62E9%u5668
+        fullscreenButton: false, //%u662F%u5426%u663E%u793A%u5168%u5C4F%u6309%u94AE
+        geocoder: false, //%u662F%u5426%u663E%u793Ageocoder%u5C0F%u5668%u4EF6%uFF0C%u53F3%u4E0A%u89D2%u67E5%u8BE2%u6309%u94AE
+        homeButton: false, //%u662F%u5426%u663E%u793AHome%u6309%u94AE
+        infoBox: false, //%u662F%u5426%u663E%u793A%u4FE1%u606F%u6846
+        sceneModePicker: false, //%u662F%u5426%u663E%u793A3D/2D%u9009%u62E9%u5668
+        selectionIndicator: false, //%u662F%u5426%u663E%u793A%u9009%u53D6%u6307%u793A%u5668%u7EC4%u4EF6
+        timeline: true, //%u662F%u5426%u663E%u793A%u65F6%u95F4%u8F74
+        navigationHelpButton: false, //%u662F%u5426%u663E%u793A%u53F3%u4E0A%u89D2%u7684%u5E2E%u52A9%u6309%u94AE
+        scene3DOnly: true, //%u5982%u679C%u8BBE%u7F6E%u4E3Atrue%uFF0C%u5219%u6240%u6709%u51E0%u4F55%u56FE%u5F62%u4EE53D%u6A21%u5F0F%u7ED8%u5236%u4EE5%u8282%u7EA6GPU%u8D44%u6E90
+        clock: new Cesium.Clock(), //%u7528%u4E8E%u63A7%u5236%u5F53%u524D%u65F6%u95F4%u7684%u65F6%u949F%u5BF9%u8C61
+        selectedImageryProviderViewModel: undefined, //%u5F53%u524D%u56FE%u50CF%u56FE%u5C42%u7684%u663E%u793A%u6A21%u578B%uFF0C%u4EC5baseLayerPicker%u8BBE%u4E3Atrue%u6709%u610F%u4E49
+        imageryProviderViewModels:
+          Cesium.createDefaultImageryProviderViewModels(), //%u53EF%u4F9BBaseLayerPicker%u9009%u62E9%u7684%u56FE%u50CF%u56FE%u5C42ProviderViewModel%u6570%u7EC4
+        selectedTerrainProviderViewModel: undefined, //%u5F53%u524D%u5730%u5F62%u56FE%u5C42%u7684%u663E%u793A%u6A21%u578B%uFF0C%u4EC5baseLayerPicker%u8BBE%u4E3Atrue%u6709%u610F%u4E49
+        terrainProviderViewModels:
+          Cesium.createDefaultTerrainProviderViewModels(), //%u53EF%u4F9BBaseLayerPicker%u9009%u62E9%u7684%u5730%u5F62%u56FE%u5C42ProviderViewModel%u6570%u7EC4
+        fullscreenElement: document.body, //%u5168%u5C4F%u65F6%u6E32%u67D3%u7684HTML%u5143%u7D20,
+        useDefaultRenderLoop: true, //%u5982%u679C%u9700%u8981%u63A7%u5236%u6E32%u67D3%u5FAA%u73AF%uFF0C%u5219%u8BBE%u4E3Atrue
+        targetFrameRate: undefined, //%u4F7F%u7528%u9ED8%u8BA4render loop%u65F6%u7684%u5E27%u7387
+        showRenderLoopErrors: false, //%u5982%u679C%u8BBE%u4E3Atrue%uFF0C%u5C06%u5728%u4E00%u4E2AHTML%u9762%u677F%u4E2D%u663E%u793A%u9519%u8BEF%u4FE1%u606F
+        automaticallyTrackDataSourceClocks: true, //%u81EA%u52A8%u8FFD%u8E2A%u6700%u8FD1%u6DFB%u52A0%u7684%u6570%u636E%u6E90%u7684%u65F6%u949F%u8BBE%u7F6E
+
+        contextOptions: {
+          // %u652F%u6301html2cavas%u622A%u56FE
+          webgl: {
+            preserveDrawingBuffer: true, // %u8BBE%u7F6E%u4E3A true %u6765%u542F%u7528
+          },
+        },
+
+        //%u4F20%u9012%u7ED9Scene%u5BF9%u8C61%u7684%u4E0A%u4E0B%u6587%u53C2%u6570%uFF08scene.options%uFF09
+        sceneMode: Cesium.SceneMode.SCENE3D, //%u521D%u59CB%u573A%u666F%u6A21%u5F0F
+        mapProjection: new Cesium.WebMercatorProjection(), //%u5730%u56FE%u6295%u5F71%u4F53%u7CFB
+        dataSources: new Cesium.DataSourceCollection(),
+      });
+
+      // %u6E05%u9664%u9ED8%u8BA4%u5E95%u56FE
+      viewer.imageryLayers.remove(viewer.imageryLayers.get(0));
+
+      // %u6E05%u9664%u9ED8%u8BA4%u5730%u5F62
+      viewer.scene.terrainProvider = new Cesium.EllipsoidTerrainProvider({});
+
+      // %u52A0%u8F7D%u5355%u5F20%u56FE%u7247
+      var imageryProvider = new Cesium.SingleTileImageryProvider({
+        url: './../../world_b.jpg',
+        id: '1',
+      });
+      viewer.imageryLayers.addImageryProvider(imageryProvider);
+
+      var options = {
+        crs: 'WGS84', // %u4F7F%u752884%u5750%u6807%u7CFB%uFF0C%u9ED8%u8BA4%u4E3A%uFF1AGCJ02
+        style: 4,
+      };
+      viewer.imageryLayers.add(
+        new Cesium.ImageryLayer(new Cesium.TencentImageryProvider(options)),
+      );
+      let tileset;
+
+      let czmldata = new Cesium.CzmlDataSource.load('./../../wx.czml');
+      viewer.dataSources.add(czmldata);
+      viewer.clock.shouldAnimate = true;
+
+      let inters = 3;
+      let lon = 110;
+      let quan = 1;
+      let timer = setInterval(() => {
+        lon = lon - inters;
+        if (lon < -180) {
+          lon = 180;
+          quan = quan + 1;
+        }
+        if (quan == 2 && lon > 110) {
+          clearInterval(timer);
+          viewer.camera.flyTo({
+            destination: Cesium.Cartesian3.fromDegrees(110, 10, 50000000.0),
+            orientation: {
+              heading: Cesium.Math.toRadians(358.0),
+              pitch: Cesium.Math.toRadians(-89.5),
+              roll: 0.0,
+            },
+            easingFunction: Cesium.EasingFunction.LINEAR_NONE,
+            complete: () => {
+              viewer.camera.flyTo({
+                destination: Cesium.Cartesian3.fromDegrees(
+                  121.549708,
+                  25.036475,
+                  2662.5,
+                ),
+                // easingFunction: Cesium.EasingFunction.LINEAR_NONE,
+                duration: 5,
+                orientation: {
+                  heading: Cesium.Math.toRadians(2.8),
+                  pitch: Cesium.Math.toRadians(-84.8),
+                  roll: 0.0,
+                },
+                complete: () => {
+                  loadsss();
+                  loadTX();
+                  loadHuo();
+                  setTimeout(function () {
+                    loadFJ();
+                    loadFJ1();
+                    loadMsg();
+                    loadXFC();
+                    loadXJC();
+                  }, 1000);
+                },
+              });
+            },
+          });
+        } else {
+          viewer.camera.setView({
+            destination: Cesium.Cartesian3.fromDegrees(lon, 10, 50000000.0),
+            orientation: {
+              heading: Cesium.Math.toRadians(358.0),
+              pitch: Cesium.Math.toRadians(-89.5),
+              roll: 0.0,
+            },
+          });
+        }
+      }, 30);
+      // loadsss();
+      // loadTX();
+      // loadHuo();
+      // setTimeout(function () {
+      //   loadFJ();
+      //   loadFJ1();
+      //   loadMsg();
+      //   loadXFC();
+      //   loadXJC();
+      // }, 1000);
+
+      function loadTX() {
+        var circleScanSystem = new CircleScanSystem(viewer, {
+          type: 'Circle',
+          lon: '121.554532',
+          lat: '25.042364',
+          radius: 100,
+        });
+        // var circleScanSystem1 = new CircleScanSystem(viewer, {
+        //   type: "Circle",
+        //   lon: "121.552956",
+        //   lat: "25.037859",
+        //   radius: 100,
+        // });
+        var circleScanSystem2 = new CircleScanSystem(viewer, {
+          type: 'Radar',
+          lon: '121.5463',
+          lat: '25.041775',
+          radius: 200,
+        });
+        var circleScanSystem2 = new CircleScanSystem(viewer, {
+          type: 'Radar',
+          lon: '121.55649',
+          lat: '25.034101',
+          radius: 80,
+        });
+
+        viewer.entities.add({
+          position: Cesium.Cartesian3.fromDegrees(121.552956, 25.037859, 1),
+          ellipse: {
+            semiMinorAxis: 150,
+            semiMajorAxis: 150,
+            height: 10,
+            material: new Cesium.CircleWaveMaterialProperty({
+              color: '#0858D6',
+              duration: 2000,
+              gradient: 0,
+              count: 3,
+            }),
+          },
+        });
+
+        viewer.entities.add({
+          position: Cesium.Cartesian3.fromDegrees(121.546405, 25.037277, 1),
+          ellipse: {
+            semiMinorAxis: 150,
+            semiMajorAxis: 150,
+            height: 10,
+            material: new Cesium.CircleWaveMaterialProperty({
+              color: '#FFCB33',
+              duration: 3000,
+              gradient: 0,
+              count: 4,
+            }),
+          },
+        });
+
+        let source = `czm_material czm_getMaterial(czm_materialInput materialInput)
+            {
+                czm_material material = czm_getDefaultMaterial(materialInput);
+                vec2 st = materialInput.st;
+                vec4 colorImage = texture(image, vec2(fract((st.s - speed * czm_frameNumber * 0.001)), st.t));
+                material.alpha = colorImage.a * color.a;
+                material.diffuse = color.rgb;
+                return material;
+        }`;
+
+        let material = new Cesium.Material({
+          fabric: {
+            uniforms: {
+              color: Cesium.Color.fromCssColorString('#7ffeff'),
+              image: './../../line1.png',
+              speed: 10,
+            },
+            source: source,
+          },
+          translucent: function () {
+            return true;
+          },
+        });
+
+        var appearance = new Cesium.PolylineMaterialAppearance();
+        appearance.material = material;
+
+        viewer.scene.primitives.add(
+          new Cesium.Primitive({
+            geometryInstances: new Cesium.GeometryInstance({
+              geometry: new Cesium.PolylineGeometry({
+                positions: Cesium.Cartesian3.fromDegreesArray([
+                  121.54383710651683, 25.04158767318846, 121.54886660576454,
+                  25.041520778338935, 121.5489302661648, 25.037809764195416,
+                  121.55763292042423, 25.037610190383617,
+                ]),
+                width: 5.0,
+              }),
+            }),
+            appearance: appearance,
+          }),
+        );
+        viewer.scene.primitives.add(
+          new Cesium.Primitive({
+            geometryInstances: new Cesium.GeometryInstance({
+              geometry: new Cesium.PolylineGeometry({
+                positions: Cesium.Cartesian3.fromDegreesArray([
+                  121.55375466873483, 25.044150811019648, 121.55544465416511,
+                  25.037715002796432, 121.54867305622793, 25.037870016863494,
+                  121.54871015658512, 25.033391988086763,
+                ]),
+                width: 5.0,
+              }),
+            }),
+            appearance: appearance,
+          }),
+        );
+
+        viewer.scene.primitives.add(
+          new Cesium.Primitive({
+            geometryInstances: new Cesium.GeometryInstance({
+              geometry: new Cesium.PolylineGeometry({
+                positions: Cesium.Cartesian3.fromDegreesArray([
+                  121.54896133676533, 25.044688605691732, 121.54907493228905,
+                  25.041491821748266, 121.55760945852529, 25.041291233041818,
+                  121.55747389009491, 25.033084480003765, 121.543669229817,
+                  25.033348047963145, 121.54380690184257, 25.038091540100325,
+                  121.54874670371714, 25.03798076751336, 121.54905974002901,
+                  25.044688605691732, 121.54652610721564, 25.04506985487869,
+                  121.54386854531765, 25.044935266844632, 121.54368432924542,
+                  25.03824665858879, 121.5575974570097, 25.037847869365393,
+                  121.55782052058595, 25.04495769594847, 121.55375546574658,
+                  25.044262809177837, 121.54905987101426, 25.044733445131712,
+                ]),
+                width: 5.0,
+              }),
+            }),
+            appearance: appearance,
+          }),
+        );
+
+        viewer.scene.primitives.add(
+          new Cesium.Primitive({
+            geometryInstances: new Cesium.GeometryInstance({
+              geometry: new Cesium.PolylineGeometry({
+                positions: Cesium.Cartesian3.fromDegreesArray([
+                  121.55247102172734, 25.033294114977295, 121.5525021244456,
+                  25.036184694941213, 121.5511111493363, 25.037979511647478,
+                  121.54379246879625, 25.038023901030698, 121.54384621066026,
+                  25.041653508137443, 121.5461551006216, 25.041497151878872,
+                  121.54599566446967, 25.0379573182758, 121.55297123215576,
+                  25.03793512578399, 121.55298088865737, 25.04145248665732,
+                  121.55296365188275, 25.044138703413196,
+                ]),
+                width: 5.0,
+              }),
+            }),
+            appearance: appearance,
+          }),
+        );
+
+        viewer.scene.primitives.add(
+          new Cesium.Primitive({
+            geometryInstances: new Cesium.GeometryInstance({
+              geometry: new Cesium.PolylineGeometry({
+                positions: Cesium.Cartesian3.fromDegreesArray([
+                  121.54375455026866, 25.036029857442244, 121.54610032336575,
+                  25.035985626035824, 121.54598728823271, 25.03340416800252,
+                  121.54881491346185, 25.033382155659254, 121.54878833220863,
+                  25.035565602229056, 121.55252458735305, 25.035344663858893,
+                  121.55250253652764, 25.036361704627197, 121.55299202722222,
+                  25.036605184507167, 121.55292156212147, 25.037668884495375,
+                  121.55566169439066, 25.0375801655385, 121.55560211090364,
+                  25.035499311540576, 121.55739387018264, 25.033206088198455,
+                ]),
+                width: 5.0,
+              }),
+            }),
+            appearance: appearance,
+          }),
+        );
+
+        let data = [
+          [121.5435972916668, 25.03335124407222],
+          [121.55758689992729, 25.03305850196061],
+          [121.5578765706079, 25.045082938309875],
+          [121.55308216929683, 25.044389044803737],
+          [121.54911574643842, 25.04483902108565],
+          [121.54648299411446, 25.045158015241427],
+          [121.54397513270857, 25.04493282041925],
+          [121.54359717389292, 25.033369546587437],
+        ];
+        let coor = Array.prototype.concat.apply([], data);
+        let datasouce = map_common_addDatasouce('wall');
+
+        datasouce.entities.add({
+          wall: {
+            positions: Cesium.Cartesian3.fromDegreesArray(coor),
+            positions: Cesium.Cartesian3.fromDegreesArray(coor),
+            maximumHeights: new Array(data.length).fill(50),
+            minimunHeights: new Array(data.length).fill(0),
+
+            // %u52A8%u6001
+            material: new Cesium.DynamicWallMaterialProperty({
+              trailImage: './../../wall.png',
+              color: Cesium.Color.CYAN,
+              duration: 1500,
+            }),
+          },
+        });
+      }
+
+      function loadFJ() {
+        let start = new Cesium.JulianDate.fromDate(new Date());
+
+        // %u5F00%u59CB%u65F6%u95F4  cesium%u7528%u7684JulianDate:%u4EE3%u8868%u5929%u6587%u6731%u5229%u5B89%u65F6%u95F4,%u7528%u7684%u662F%u4E16%u754C%u534F%u8C03%u65F6,%u6BD4%u5317%u4EAC%u65F6%u95F4%u665A8%u4E2A%u5C0F%u65F6, %u52A0%u4E0A%u4E1C8%u65F6%uFF0C%u5C31%u662F%u5F53%u524D%u7684%u771F%u6B63%u65F6%u95F4
+        start = Cesium.JulianDate.addHours(start, 1, new Cesium.JulianDate());
+        const center = Cesium.JulianDate.addSeconds(
+          start,
+          90,
+          new Cesium.JulianDate(),
+        );
+        const center2 = Cesium.JulianDate.addSeconds(
+          start,
+          180,
+          new Cesium.JulianDate(),
+        );
+        const center3 = Cesium.JulianDate.addSeconds(
+          start,
+          270,
+          new Cesium.JulianDate(),
+        );
+        const stop = Cesium.JulianDate.addSeconds(
+          start,
+          360,
+          new Cesium.JulianDate(),
+        );
+
+        // %u8BBE%u7F6E%u65F6%u949F%u8303%u56F4
+        viewer.clock.startTime = start.clone();
+        viewer.clock.stopTime = stop.clone();
+        viewer.clock.currentTime = start.clone();
+
+        // %u5FAA%u73AF%u7ED3%u675F%u65F6%u540E%u7EED%u52A8%u4F5C
+        viewer.clock.clockRange = Cesium.ClockRange.LOOP_STOP;
+
+        // %u65F6%u95F4%u901F%u7387%u63A7%u5236%u901F%u5EA6%uFF0C%u65F6%u95F4%u8C03%u5FEB%u591A%u5C11%u500D%uFF0C%u6BD4%u5982%u539F%u6765%u7528%u65F6360%u79D2%uFF0C%u8C03%u657410%u500D%u540E%uFF0C%u73B0%u5728%u7528%u65F636%u79D2
+        viewer.clock.multiplier = 10;
+        //%u7ED9%u4E0B%u65B9%u65F6%u95F4%u7EBF%u8BBE%u7F6E%u8FB9%u754C
+        viewer.timeline.zoomTo(start, stop);
+
+        const position = new Cesium.SampledPositionProperty();
+
+        const startPos = Cesium.Cartesian3.fromDegrees(
+          121.54502359550423,
+          25.04103506115554,
+          300,
+        );
+        const centerPos = Cesium.Cartesian3.fromDegrees(
+          121.55653842563282,
+          25.040757514098885,
+          300,
+        );
+        const centerPos2 = Cesium.Cartesian3.fromDegrees(
+          121.55626812445513,
+          25.033279833487114,
+          300,
+        );
+        const centerPos3 = Cesium.Cartesian3.fromDegrees(
+          121.54412259158227,
+          25.0335247429108,
+          300,
+        );
+        const endPos = Cesium.Cartesian3.fromDegrees(
+          121.54502359550423,
+          25.04103506115554,
+          300,
+        );
+
+        position.addSample(start, startPos);
+        position.addSample(center, centerPos);
+        position.addSample(center2, centerPos2);
+        position.addSample(center3, centerPos3);
+        position.addSample(stop, endPos);
+
+        const entity = viewer.entities.add({
+          // %u5C06%u5B9E%u4F53availability%u8BBE%u7F6E%u4E3A%u4E0E%u6A21%u62DF%u65F6%u95F4%u76F8%u540C%u7684%u65F6%u95F4%u95F4%u9694%u3002
+          availability: new Cesium.TimeIntervalCollection([
+            new Cesium.TimeInterval({
+              start: start,
+              stop: stop,
+            }),
+          ]),
+          position: position, // %u8BA1%u7B97%u5B9E%u4F53%u4F4D%u7F6E%u5C5E%u6027
+          orientation: new Cesium.VelocityOrientationProperty(position),
+          model: {
+            uri: '../../missile/scene.gltf',
+            scale: 10,
+            minimumPixelSize: 32,
+          },
+
+          // %u8DEF%u5F84
+          path: {
+            show: false,
+            resolution: 1,
+            material: new Cesium.PolylineGlowMaterialProperty({
+              glowPower: 0.3,
+              color: Cesium.Color.BLUE,
+            }),
+            width: 5,
+          },
+        });
+      }
+      function loadFJ1() {
+        let start = new Cesium.JulianDate.fromDate(new Date());
+
+        // %u5F00%u59CB%u65F6%u95F4  cesium%u7528%u7684JulianDate:%u4EE3%u8868%u5929%u6587%u6731%u5229%u5B89%u65F6%u95F4,%u7528%u7684%u662F%u4E16%u754C%u534F%u8C03%u65F6,%u6BD4%u5317%u4EAC%u65F6%u95F4%u665A8%u4E2A%u5C0F%u65F6, %u52A0%u4E0A%u4E1C8%u65F6%uFF0C%u5C31%u662F%u5F53%u524D%u7684%u771F%u6B63%u65F6%u95F4
+        start = Cesium.JulianDate.addHours(start, 1, new Cesium.JulianDate());
+        const center = Cesium.JulianDate.addSeconds(
+          start,
+          90,
+          new Cesium.JulianDate(),
+        );
+        const center2 = Cesium.JulianDate.addSeconds(
+          start,
+          180,
+          new Cesium.JulianDate(),
+        );
+        const center3 = Cesium.JulianDate.addSeconds(
+          start,
+          270,
+          new Cesium.JulianDate(),
+        );
+        const stop = Cesium.JulianDate.addSeconds(
+          start,
+          360,
+          new Cesium.JulianDate(),
+        );
+
+        // %u8BBE%u7F6E%u65F6%u949F%u8303%u56F4
+        viewer.clock.startTime = start.clone();
+        viewer.clock.stopTime = stop.clone();
+        viewer.clock.currentTime = start.clone();
+
+        // %u5FAA%u73AF%u7ED3%u675F%u65F6%u540E%u7EED%u52A8%u4F5C
+        viewer.clock.clockRange = Cesium.ClockRange.LOOP_STOP;
+
+        // %u65F6%u95F4%u901F%u7387%u63A7%u5236%u901F%u5EA6%uFF0C%u65F6%u95F4%u8C03%u5FEB%u591A%u5C11%u500D%uFF0C%u6BD4%u5982%u539F%u6765%u7528%u65F6360%u79D2%uFF0C%u8C03%u657410%u500D%u540E%uFF0C%u73B0%u5728%u7528%u65F636%u79D2
+        viewer.clock.multiplier = 10;
+        //%u7ED9%u4E0B%u65B9%u65F6%u95F4%u7EBF%u8BBE%u7F6E%u8FB9%u754C
+        viewer.timeline.zoomTo(start, stop);
+
+        const position = new Cesium.SampledPositionProperty();
+
+        const startPos = Cesium.Cartesian3.fromDegrees(
+          121.54502359550423,
+          25.04103506115554,
+          210,
+        );
+        const centerPos = Cesium.Cartesian3.fromDegrees(
+          121.55653842563282,
+          25.040757514098885,
+          210,
+        );
+        const centerPos2 = Cesium.Cartesian3.fromDegrees(
+          121.55626812445513,
+          25.033279833487114,
+          210,
+        );
+        const centerPos3 = Cesium.Cartesian3.fromDegrees(
+          121.54412259158227,
+          25.0335247429108,
+          210,
+        );
+        const endPos = Cesium.Cartesian3.fromDegrees(
+          121.54502359550423,
+          25.04103506115554,
+          210,
+        );
+
+        position.addSample(start, startPos);
+        position.addSample(center, centerPos);
+        position.addSample(center2, centerPos2);
+        position.addSample(center3, centerPos3);
+        position.addSample(stop, endPos);
+
+        const entity = viewer.entities.add({
+          // %u5C06%u5B9E%u4F53availability%u8BBE%u7F6E%u4E3A%u4E0E%u6A21%u62DF%u65F6%u95F4%u76F8%u540C%u7684%u65F6%u95F4%u95F4%u9694%u3002
+          availability: new Cesium.TimeIntervalCollection([
+            new Cesium.TimeInterval({
+              start: start,
+              stop: stop,
+            }),
+          ]),
+          position: position, // %u8BA1%u7B97%u5B9E%u4F53%u4F4D%u7F6E%u5C5E%u6027
+          orientation: new Cesium.VelocityOrientationProperty(position),
+          // model: {
+          //   uri: 'missile/scene.gltf',
+          //   scale: 10,
+          //   minimumPixelSize: 32
+          // },
+          cylinder: {
+            material: Cesium.Color.fromCssColorString('rgba(255,240,0, 0.35)'),
+            length: 200, //%u5706%u67F1%u4F53%u7684%u957F%u5EA6
+            topRadius: 0, //%u9876%u90E8%u534A%u5F84
+            bottomRadius: 70,
+          },
+          // %u8DEF%u5F84
+          path: {
+            show: false,
+            resolution: 1,
+            material: new Cesium.PolylineGlowMaterialProperty({
+              glowPower: 0.3,
+              color: Cesium.Color.BLUE,
+            }),
+            width: 5,
+          },
+        });
+      }
+      function loadXFC() {
+        let start = new Cesium.JulianDate.fromDate(new Date());
+
+        start = Cesium.JulianDate.addHours(start, 1, new Cesium.JulianDate());
+        const center = Cesium.JulianDate.addSeconds(
+          start,
+          90,
+          new Cesium.JulianDate(),
+        );
+        const center2 = Cesium.JulianDate.addSeconds(
+          start,
+          180,
+          new Cesium.JulianDate(),
+        );
+        const center3 = Cesium.JulianDate.addSeconds(
+          start,
+          270,
+          new Cesium.JulianDate(),
+        );
+        const stop = Cesium.JulianDate.addSeconds(
+          start,
+          360,
+          new Cesium.JulianDate(),
+        );
+
+        // %u8BBE%u7F6E%u65F6%u949F%u8303%u56F4
+        viewer.clock.startTime = start.clone();
+        viewer.clock.stopTime = stop.clone();
+        viewer.clock.currentTime = start.clone();
+
+        // %u5FAA%u73AF%u7ED3%u675F%u65F6%u540E%u7EED%u52A8%u4F5C
+        viewer.clock.clockRange = Cesium.ClockRange.LOOP_STOP;
+
+        // %u65F6%u95F4%u901F%u7387%u63A7%u5236%u901F%u5EA6%uFF0C%u65F6%u95F4%u8C03%u5FEB%u591A%u5C11%u500D%uFF0C%u6BD4%u5982%u539F%u6765%u7528%u65F6360%u79D2%uFF0C%u8C03%u657410%u500D%u540E%uFF0C%u73B0%u5728%u7528%u65F636%u79D2
+        viewer.clock.multiplier = 20;
+        //%u7ED9%u4E0B%u65B9%u65F6%u95F4%u7EBF%u8BBE%u7F6E%u8FB9%u754C
+        viewer.timeline.zoomTo(start, stop);
+
+        const position = new Cesium.SampledPositionProperty();
+
+        const startPos = Cesium.Cartesian3.fromDegrees(
+          121.54883989579417,
+          25.04435068135976,
+          1,
+        );
+        const centerPos = Cesium.Cartesian3.fromDegrees(
+          121.54891310254465,
+          25.041764022763047,
+          1,
+        );
+        const centerPos2 = Cesium.Cartesian3.fromDegrees(
+          121.54886429804492,
+          25.039707921882993,
+          1,
+        );
+        const centerPos3 = Cesium.Cartesian3.fromDegrees(
+          121.54886429804492,
+          25.037696004860265,
+          1,
+        );
+        const endPos = Cesium.Cartesian3.fromDegrees(
+          121.55147533881802,
+          25.03767389569815,
+          1,
+        );
+
+        position.addSample(start, startPos);
+        position.addSample(center, centerPos);
+        position.addSample(center2, centerPos2);
+        position.addSample(center3, centerPos3);
+        position.addSample(stop, endPos);
+
+        const entity = viewer.entities.add({
+          availability: new Cesium.TimeIntervalCollection([
+            new Cesium.TimeInterval({
+              start: start,
+              stop: stop,
+            }),
+          ]),
+          position: position, // %u8BA1%u7B97%u5B9E%u4F53%u4F4D%u7F6E%u5C5E%u6027
+          orientation: new Cesium.VelocityOrientationProperty(position),
+          model: {
+            uri: '../../xiaofangche.gltf',
+            scale: 10,
+            minimumPixelSize: 32,
+          },
+
+          path: {
+            show: false,
+          },
+        });
+      }
+      function loadXJC() {
+        let start = new Cesium.JulianDate.fromDate(new Date());
+
+        start = Cesium.JulianDate.addHours(start, 1, new Cesium.JulianDate());
+        const center = Cesium.JulianDate.addSeconds(
+          start,
+          120,
+          new Cesium.JulianDate(),
+        );
+        const center2 = Cesium.JulianDate.addSeconds(
+          start,
+          240,
+          new Cesium.JulianDate(),
+        );
+        const stop = Cesium.JulianDate.addSeconds(
+          start,
+          360,
+          new Cesium.JulianDate(),
+        );
+
+        // %u8BBE%u7F6E%u65F6%u949F%u8303%u56F4
+        viewer.clock.startTime = start.clone();
+        viewer.clock.stopTime = stop.clone();
+        viewer.clock.currentTime = start.clone();
+
+        // %u5FAA%u73AF%u7ED3%u675F%u65F6%u540E%u7EED%u52A8%u4F5C
+        viewer.clock.clockRange = Cesium.ClockRange.LOOP_STOP;
+
+        // %u65F6%u95F4%u901F%u7387%u63A7%u5236%u901F%u5EA6%uFF0C%u65F6%u95F4%u8C03%u5FEB%u591A%u5C11%u500D%uFF0C%u6BD4%u5982%u539F%u6765%u7528%u65F6360%u79D2%uFF0C%u8C03%u657410%u500D%u540E%uFF0C%u73B0%u5728%u7528%u65F636%u79D2
+        viewer.clock.multiplier = 20;
+        //%u7ED9%u4E0B%u65B9%u65F6%u95F4%u7EBF%u8BBE%u7F6E%u8FB9%u754C
+        viewer.timeline.zoomTo(start, stop);
+
+        const position = new Cesium.SampledPositionProperty();
+
+        const startPos = Cesium.Cartesian3.fromDegrees(
+          121.54884167619042,
+          25.033273079716622,
+          1,
+        );
+        const centerPos = Cesium.Cartesian3.fromDegrees(
+          121.54859722416842,
+          25.037776601420433,
+          1,
+        );
+        const centerPos2 = Cesium.Cartesian3.fromDegrees(
+          121.55544188079375,
+          25.037721231255958,
+          1,
+        );
+
+        const endPos = Cesium.Cartesian3.fromDegrees(
+          121.55391405565354,
+          25.043590329597393,
+          1,
+        );
+
+        position.addSample(start, startPos);
+        position.addSample(center, centerPos);
+        position.addSample(center2, centerPos2);
+        position.addSample(stop, endPos);
+
+        const entity = viewer.entities.add({
+          availability: new Cesium.TimeIntervalCollection([
+            new Cesium.TimeInterval({
+              start: start,
+              stop: stop,
+            }),
+          ]),
+          position: position, // %u8BA1%u7B97%u5B9E%u4F53%u4F4D%u7F6E%u5C5E%u6027
+          orientation: new Cesium.VelocityOrientationProperty(position),
+          model: {
+            uri: './../../wajueji.glb',
+            scale: 10,
+            minimumPixelSize: 32,
+          },
+
+          path: {
+            show: false,
+          },
+        });
+      }
+      function loadMsg() {
+        var popup = new Popup({
+          viewer: viewer,
+          className: 'bx-popup-ctn2',
+        });
+
+        popup.add({
+          geometry: Cesium.Cartesian3.fromDegrees(121.551034, 25.036803, 30),
+          content: {
+            header: '%u4E8B%u4EF6%u63D0%u9192',
+            content: `
+              <div><span>%u4E8B%u4EF6%u540D%u79F0%uFF1A</span><span>%u6C83%u5C14%u739B%u53D1%u751F%u706B%u707E</span></div>
+              <div><span>%u76D1%u63A7%u7F16%u53F7%uFF1A</span><span>${parseInt(
+                Math.random() * 100,
+              )}</span></div>
+              <div><span>%u53D1%u751F%u65F6%u95F4%uFF1A</span><span>2024-08-03 12:00:33</span></div>
+              <div><span>%u706B%u707E%u7B49%u7EA7%uFF1A</span><span>%u4E00%u822C</span></div>
+                  `,
+          },
+          isclose: true,
+        });
+
+        popup.add({
+          // lon: "121.554532",
+          // lat: "25.042364",
+          geometry: Cesium.Cartesian3.fromDegrees(121.554532, 25.042364, 30),
+          content: {
+            header: '%u4E8B%u4EF6%u63D0%u9192',
+            content: `
+              <div><span>%u4E8B%u4EF6%u540D%u79F0%uFF1A</span><span>%u4EC1%u548C%u8DEF%u53D1%u751F%u6253%u67B6%u6597%u6BB4</span></div>
+              <div><span>%u76D1%u63A7%u7F16%u53F7%uFF1A</span><span>${parseInt(
+                Math.random() * 100,
+              )}</span></div>
+              <div><span>%u53D1%u751F%u65F6%u95F4%uFF1A</span><span>2024-08-03 14:00:33</span></div>
+              <div><span>%u6848%u4EF6%u7B49%u7EA7%uFF1A</span><span>%u7D27%u6025%uFF01</span></div>
+                  `,
+          },
+          isclose: true,
+        });
+      }
+
+      function loadHuo() {
+        //%u706B%u7130%u7279%u6548
+        class FireEffect {
+          constructor(viewer, obj) {
+            this.viewer = viewer;
+            this.viewModel = {
+              emissionRate: 5,
+              gravity: 0.0, //%u8BBE%u7F6E%u91CD%u529B%u53C2%u6570
+              minimumParticleLife: 1,
+              maximumParticleLife: 6,
+              minimumSpeed: 1.0, //%u7C92%u5B50%u53D1%u5C04%u7684%u6700%u5C0F%u901F%u5EA6
+              maximumSpeed: 4.0, //%u7C92%u5B50%u53D1%u5C04%u7684%u6700%u5927%u901F%u5EA6
+              startScale: 0.0,
+              endScale: 10.0,
+              particleSize: 25.0,
+            };
+            this.emitterModelMatrix = new Cesium.Matrix4();
+            this.translation = new Cesium.Cartesian3();
+            this.rotation = new Cesium.Quaternion();
+            this.hpr = new Cesium.HeadingPitchRoll();
+            this.trs = new Cesium.TranslationRotationScale();
+            this.scene = this.viewer.scene;
+            this.particleSystem = '';
+            this.entity = this.viewer.entities.add({
+              //%u9009%u62E9%u7C92%u5B50%u653E%u7F6E%u7684%u5750%u6807
+              position: Cesium.Cartesian3.fromDegrees(obj.lng, obj.lat),
+            });
+
+            this.init();
+          }
+
+          init() {
+            const _this = this;
+            this.viewer.clock.shouldAnimate = true;
+            this.viewer.scene.globe.depthTestAgainstTerrain = false;
+            // this.viewer.trackedEntity = this.entity;
+            var particleSystem = this.scene.primitives.add(
+              new Cesium.ParticleSystem({
+                image: './fire.png', //%u751F%u6210%u6240%u9700%u7C92%u5B50%u7684%u56FE%u7247%u8DEF%u5F84
+                //%u7C92%u5B50%u5728%u751F%u547D%u5468%u671F%u5F00%u59CB%u65F6%u7684%u989C%u8272
+                startColor: new Cesium.Color(1, 1, 1, 1),
+                //%u7C92%u5B50%u5728%u751F%u547D%u5468%u671F%u7ED3%u675F%u65F6%u7684%u989C%u8272
+                endColor: new Cesium.Color(0.5, 0, 0, 0),
+                //%u7C92%u5B50%u5728%u751F%u547D%u5468%u671F%u5F00%u59CB%u65F6%u521D%u59CB%u6BD4%u4F8B
+                startScale: _this.viewModel.startScale,
+                //%u7C92%u5B50%u5728%u751F%u547D%u5468%u671F%u7ED3%u675F%u65F6%u6BD4%u4F8B
+                endScale: _this.viewModel.endScale,
+                //%u7C92%u5B50%u53D1%u5C04%u7684%u6700%u5C0F%u901F%u5EA6
+                minimumParticleLife: _this.viewModel.minimumParticleLife,
+                //%u7C92%u5B50%u53D1%u5C04%u7684%u6700%u5927%u901F%u5EA6
+                maximumParticleLife: _this.viewModel.maximumParticleLife,
+                //%u7C92%u5B50%u8D28%u91CF%u7684%u6700%u5C0F%u754C%u9650
+                minimumSpeed: _this.viewModel.minimumSpeed,
+                //粒子质量的最大限制
+                maximumSpeed: _this.viewModel.maximumSpeed,
+                //以像素为单位缩放粒子图片尺寸
+                imageSize: new Cesium.Cartesian2(
+                  _this.viewModel.particleSize,
+                  _this.viewModel.particleSize,
+                ),
+                //每秒发射的粒子数
+                emissionRate: _this.viewModel.emissionRate,
+                //粒子系统发射粒子的时间（秒）
+                lifetime: 16.0,
+                //%u7C92%u5B50%u7CFB%u7EDF%u662F%u5426%u5E94%u8BE5%u5728%u5B8C%u6210%u65F6%u5FAA%u73AF%u5176%u7206%u53D1
+                loop: true,
+                //设置粒子的大小是否以米或像素为单位
+                sizeInMeters: true,
+                //系统的粒子发射器
+                emitter: new Cesium.ConeEmitter(Cesium.Math.toRadians(45.0)), //BoxEmitter %u76D2%u5F62%u53D1%u5C04%u5668%uFF0CConeEmitter %u9525%u5F62%u53D1%u5C04%u5668%uFF0CSphereEmitter %u7403%u5F62%u53D1%u5C04%u5668%uFF0CCircleEmitter%u5706%u5F62%u53D1%u5C04%u5668
+              }),
+            );
+            this.particleSystem = particleSystem;
+            this.preUpdateEvent();
+          }
+
+          //场景渲染事件
+          preUpdateEvent() {
+            let _this = this;
+            this.viewer.scene.preUpdate.addEventListener(function (
+              scene,
+              time,
+            ) {
+              //发射器地理位置
+              _this.particleSystem.modelMatrix = _this.computeModelMatrix(
+                _this.entity,
+                time,
+              );
+              //发射器局部位置
+              _this.particleSystem.emitterModelMatrix =
+                _this.computeEmitterModelMatrix();
+              // 将发射器旋转
+              if (_this.viewModel.spin) {
+                _this.viewModel.heading += 1.0;
+                _this.viewModel.pitch += 1.0;
+                _this.viewModel.roll += 1.0;
+              }
+            });
+          }
+
+          computeModelMatrix(entity, time) {
+            return entity.computeModelMatrix(time, new Cesium.Matrix4());
+          }
+
+          computeEmitterModelMatrix() {
+            this.hpr = Cesium.HeadingPitchRoll.fromDegrees(
+              0.0,
+              0.0,
+              0.0,
+              this.hpr,
+            );
+            this.trs.translation = Cesium.Cartesian3.fromElements(
+              -4.0,
+              0.0,
+              1.4,
+              this.translation,
+            );
+            this.trs.rotation = Cesium.Quaternion.fromHeadingPitchRoll(
+              this.hpr,
+              this.rotation,
+            );
+
+            return Cesium.Matrix4.fromTranslationRotationScale(
+              this.trs,
+              this.emitterModelMatrix,
+            );
+          }
+
+          removeEvent() {
+            this.viewer.scene.preUpdate.removeEventListener(
+              this.preUpdateEvent,
+              this,
+            );
+            this.emitterModelMatrix = undefined;
+            this.translation = undefined;
+            this.rotation = undefined;
+            this.hpr = undefined;
+            this.trs = undefined;
+          }
+
+          //移除粒子特效
+          remove() {
+            () => {
+              return this.removeEvent();
+            }; //清除事件
+            this.viewer.scene.primitives.remove(this.particleSystem); //删除粒子对象
+            this.viewer.entities.remove(this.entity); //删除entity
+          }
+        }
+        class smokeEffect {
+          constructor(viewer, obj) {
+            this.viewer = viewer;
+            this.viewModel = {
+              emissionRate: 12,
+              gravity: 2.0, //%u8BBE%u7F6E%u91CD%u529B%u53C2%u6570
+              minimumParticleLife: 2,
+              maximumParticleLife: 2,
+              minimumSpeed: 1.0, //%u7C92%u5B50%u53D1%u5C04%u7684%u6700%u5C0F%u901F%u5EA6
+              maximumSpeed: 2.0, //%u7C92%u5B50%u53D1%u5C04%u7684%u6700%u5927%u901F%u5EA6
+              startScale: 2.0,
+              endScale: 11.0,
+              particleSize: 7.0,
+            };
+            this.emitterModelMatrix = new Cesium.Matrix4();
+            this.translation = new Cesium.Cartesian3();
+            this.rotation = new Cesium.Quaternion();
+            this.hpr = new Cesium.HeadingPitchRoll();
+            this.trs = new Cesium.TranslationRotationScale();
+            this.scene = this.viewer.scene;
+            this.particleSystem = '';
+            this.entity = this.viewer.entities.add({
+              //%u9009%u62E9%u7C92%u5B50%u653E%u7F6E%u7684%u5750%u6807
+              position: Cesium.Cartesian3.fromDegrees(obj.lng, obj.lat, 10),
+            });
+            this.init();
+          }
+
+          init() {
+            const _this = this;
+            this.viewer.clock.shouldAnimate = true;
+            this.viewer.scene.globe.depthTestAgainstTerrain = false;
+            // this.viewer.trackedEntity = this.entity;
+            var particleSystem = this.scene.primitives.add(
+              new Cesium.ParticleSystem({
+                image: './../../smoke.png', //%u751F%u6210%u6240%u9700%u7C92%u5B50%u7684%u56FE%u7247%u8DEF%u5F84
+                //%u7C92%u5B50%u5728%u751F%u547D%u5468%u671F%u5F00%u59CB%u65F6%u7684%u989C%u8272
+                startColor: Cesium.Color.BLACK.withAlpha(0.7),
+                //%u7C92%u5B50%u5728%u751F%u547D%u5468%u671F%u7ED3%u675F%u65F6%u7684%u989C%u8272
+                endColor: Cesium.Color.WHITE.withAlpha(0.3),
+                //%u7C92%u5B50%u5728%u751F%u547D%u5468%u671F%u5F00%u59CB%u65F6%u521D%u59CB%u6BD4%u4F8B
+                startScale: _this.viewModel.startScale,
+                //%u7C92%u5B50%u5728%u751F%u547D%u5468%u671F%u7ED3%u675F%u65F6%u6BD4%u4F8B
+                endScale: _this.viewModel.endScale,
+                //%u7C92%u5B50%u53D1%u5C04%u7684%u6700%u5C0F%u901F%u5EA6
+                minimumParticleLife: _this.viewModel.minimumParticleLife,
+                //%u7C92%u5B50%u53D1%u5C04%u7684%u6700%u5927%u901F%u5EA6
+                maximumParticleLife: _this.viewModel.maximumParticleLife,
+                //%u7C92%u5B50%u8D28%u91CF%u7684%u6700%u5C0F%u754C%u9650
+                minimumSpeed: _this.viewModel.minimumSpeed,
+                //%u7C92%u5B50%u8D28%u91CF%u7684%u6700%u5927%u754C%u9650
+                maximumSpeed: _this.viewModel.maximumSpeed,
+                //%u4EE5%u50CF%u7D20%u4E3A%u5355%u4F4D%u7F29%u653E%u7C92%u5B50%u56FE%u50CF%u5C3A%u5BF8
+                imageSize: new Cesium.Cartesian2(
+                  _this.viewModel.particleSize,
+                  _this.viewModel.particleSize,
+                ),
+                //%u6BCF%u79D2%u53D1%u5C04%u7684%u7C92%u5B50%u6570
+                emissionRate: _this.viewModel.emissionRate,
+                //%u7C92%u5B50%u7CFB%u7EDF%u53D1%u5C04%u7C92%u5B50%u7684%u65F6%u95F4%uFF08%u79D2%uFF09
+                lifetime: 161.0,
+                //%u8BBE%u7F6E%u7C92%u5B50%u7684%u5927%u5C0F%u662F%u5426%u4EE5%u7C73%u6216%u50CF%u7D20%u4E3A%u5355%u4F4D
+                sizeInMeters: true,
+                //%u7CFB%u7EDF%u7684%u7C92%u5B50%u53D1%u5C04%u5668
+                emitter: new Cesium.CircleEmitter(2.0), //BoxEmitter 盒形发射器，ConeEmitter 锥形发射器，SphereEmitter 球形发射器，CircleEmitter圆形发射器
+                //回调函数，实现各种燃烧、烟雾效果
+                updateCallback: (p, dt) => {
+                  return this.applyGravity(p, dt);
+                },
+              }),
+            );
+            this.particleSystem = particleSystem;
+            this.preUpdateEvent();
+          }
+
+          //%u573A%u666F%u6E32%u67D3%u4E8B%u4EF6
+          preUpdateEvent() {
+            let _this = this;
+            this.viewer.scene.preUpdate.addEventListener(function (
+              scene,
+              time,
+            ) {
+              //%u53D1%u5C04%u5668%u5730%u7406%u4F4D%u7F6E
+              _this.particleSystem.modelMatrix = _this.computeModelMatrix(
+                _this.entity,
+                time,
+              );
+              //%u53D1%u5C04%u5668%u5C40%u90E8%u4F4D%u7F6E
+              _this.particleSystem.emitterModelMatrix =
+                _this.computeEmitterModelMatrix();
+              // %u5C06%u53D1%u5C04%u5668%u65CB%u8F6C
+              if (_this.viewModel.spin) {
+                _this.viewModel.heading += 1.0;
+                _this.viewModel.pitch += 1.0;
+                _this.viewModel.roll += 1.0;
+              }
+            });
+          }
+
+          computeModelMatrix(entity, time) {
+            return entity.computeModelMatrix(time, new Cesium.Matrix4());
+          }
+
+          computeEmitterModelMatrix() {
+            this.hpr = Cesium.HeadingPitchRoll.fromDegrees(
+              0.0,
+              0.0,
+              0.0,
+              this.hpr,
+            );
+            this.trs.translation = Cesium.Cartesian3.fromElements(
+              -4.0,
+              0.0,
+              1.4,
+              this.translation,
+            );
+            this.trs.rotation = Cesium.Quaternion.fromHeadingPitchRoll(
+              this.hpr,
+              this.rotation,
+            );
+
+            return Cesium.Matrix4.fromTranslationRotationScale(
+              this.trs,
+              this.emitterModelMatrix,
+            );
+          }
+
+          applyGravity(p, dt) {
+            var gravityScratch = new Cesium.Cartesian3();
+            var position = p.position;
+            Cesium.Cartesian3.normalize(position, gravityScratch);
+            Cesium.Cartesian3.fromElements(
+              20 * dt,
+              30 * dt,
+              gravityScratch.y * dt,
+              gravityScratch,
+            );
+            p.velocity = Cesium.Cartesian3.add(
+              p.velocity,
+              gravityScratch,
+              p.velocity,
+            );
+          }
+
+          removeEvent() {
+            this.viewer.scene.preUpdate.removeEventListener(
+              this.preUpdateEvent,
+              this,
+            );
+            this.emitterModelMatrix = undefined;
+            this.translation = undefined;
+            this.rotation = undefined;
+            this.hpr = undefined;
+            this.trs = undefined;
+          }
+
+          //%u79FB%u9664%u7C92%u5B50%u7279%u6548
+          remove() {
+            () => {
+              return this.removeEvent();
+            }; //%u6E05%u9664%u4E8B%u4EF6
+            this.viewer.scene.primitives.remove(this.particleSystem); //%u5220%u9664%u7C92%u5B50%u5BF9%u8C61
+            this.viewer.entities.remove(this.entity); //%u5220%u9664entity
+          }
+        }
+        new FireEffect(viewer, {
+          lng: 121.55001,
+          lat: 25.039343,
+        });
+        new FireEffect(viewer, {
+          lng: 121.551034,
+          lat: 25.036803,
+        });
+        new smokeEffect(viewer, {
+          lng: 121.551034,
+          lat: 25.036803,
+        });
+      }
+
+      function loadsss() {
+        tileset = new Cesium.Cesium3DTileset({
+          url: './../../data/tileset.json',
+        });
+        tileset.readyPromise
+          .then(function (tileset) {
+            viewer.scene.primitives.add(tileset);
+
+            viewer.camera.flyTo({
+              destination: Cesium.Cartesian3.fromDegrees(
+                121.549884,
+                25.025771,
+                1050.6,
+              ),
+              duration: 2,
+              orientation: {
+                heading: Cesium.Math.toRadians(0.7),
+                pitch: Cesium.Math.toRadians(-38.7),
+                roll: 0.0,
+              },
+            });
+
+            customShader2(tileset);
+          })
+          .catch(function (error) {
+            // console.log(error);
+          });
+      }
+
+      function customShader2(tileset) {
+        let customShader = new Cesium.CustomShader({
+          //片元着色器
+          fragmentShaderText: `
+                        void fragmentMain(FragmentInput fsInput, inout czm_modelMaterial material) {
+                            vec3 positionMC = fsInput.attributes.positionMC;
+                            material.diffuse = vec3(0.0, 1.0-positionMC.y*0.005, 1.0-positionMC.y*0.0015);
+
+                            float _baseHeight = 18.0; // 物体的基准高度，需要修改成一个合适的建筑基准高度
+                            float _heightRange = 60.0; // 高亮的范围(_baseHeight ~ _baseHeight + _heightRange) 默认是 0-60米
+                            float _glowRange = 120.0; // 光圈的移动范围(高度)
+
+                            float vtxf_height = fsInput.attributes.positionMC.y - _baseHeight;
+                            float vtxf_a11 = fract(czm_frameNumber / 360.0) * 3.14159265 * 2.0; //此处括号内分母为移动速度
+                            float vtxf_a12 = vtxf_height / _heightRange + sin(vtxf_a11) * 0.1;
+                            material.diffuse *= vec3(vtxf_a12, vtxf_a12, vtxf_a12);
+
+                            float vtxf_a13 = fract(czm_frameNumber / 360.0); //此处括号内分母为移动速度，数值越大，速度越慢
+                            float vtxf_h = clamp(vtxf_height / _glowRange, 0.0, 1.0);
+                            vtxf_a13 = abs(vtxf_a13 - 0.5) * 2.0;
+                            float vtxf_diff = step(0.01, abs(vtxf_h - vtxf_a13)); // 0.1 为高亮光线的范围（精细）
+                            material.diffuse += material.diffuse * (1.0 - vtxf_diff);
+                        }`,
+        });
+        tileset.customShader = customShader;
+        viewer.scene.globe.depthTestAgainstTerrain = true; //（开启）
+      }
+    </script>
+  </body>
+</html>
