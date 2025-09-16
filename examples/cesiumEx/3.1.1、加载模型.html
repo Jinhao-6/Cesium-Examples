@@ -1,0 +1,83 @@
+<!--********************************************************************
+* by jiawanlong
+*********************************************************************-->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="./../../libs/cesium/Cesium1.98/Widgets/widgets.css">
+    <script type="text/javascript" src="./../../libs/cesium/Cesium1.98/Cesium.js"></script>
+</head>
+
+<body style="margin: 0; overflow: hidden; background: #fff; width: 100%; height: 100%; position: absolute; top: 0">
+    <div id="map" style="margin: 0 auto; width: 100%; height: 100%"></div>
+
+    <script type="text/javascript">
+
+        Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIwNDljNWFmZC03MzRlLTRiMDMtYWIwMi00Yjk4YWQ4NzQwZGEiLCJpZCI6MjU5LCJpYXQiOjE3NTEzNzkyMzR9.OTqPNs3UGNnT1LYkPTavV80wN8Es_YphpJgQcpdnqWc'
+        const viewer = new Cesium.Viewer('map', {});
+        // 开启帧率
+        viewer.scene.debugShowFramesPerSecond = true;
+
+        const tileset = new Cesium.Cesium3DTileset({
+            url: "./data/tileset.json",
+        });
+
+        tileset.debugShowBoundingVolume = true; // 显示包围盒
+        tileset.readyPromise
+            .then(function (tileset) {
+                viewer.scene.primitives.add(tileset);
+                viewer.zoomTo(tileset)
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+
+
+        tileset.tileLoad.addEventListener(function (tile) {
+            console.log(tile)
+            for (let index = 0; index < tile.content.featuresLength; index++) {
+                console.log(tile.content.getFeature(index))
+                // let prpo = tile.content.getFeature(index).getProperty('属性名')
+            }
+        })
+
+        // 模型删除
+        // viewer.scene.primitives.remove(tileset)
+        // viewer.scene.primitives.removeAll()
+
+
+        const highlighted = {
+            feature: undefined,
+            originalColor: new Cesium.Color()
+        };
+
+        // 设置屏幕空间事件处理器（鼠标点击事件）
+        viewer.screenSpaceEventHandler.setInputAction(function onLeftClick(event) {
+            // 通过鼠标点击位置获取选中的要素
+            const pickedFeature = viewer.scene.pick(event.position);
+
+            // 如果之前有高亮要素，则恢复其原始颜色
+            if (Cesium.defined(highlighted.feature)) {
+                highlighted.feature.color = highlighted.originalColor;
+                highlighted.feature = undefined;
+            }
+
+            // 如果未选中任何要素，则直接返回
+            if (!Cesium.defined(pickedFeature)) {
+                return;
+            }
+
+            // 存储当前选中要素的原始颜色，并应用新的高亮颜色
+            highlighted.feature = pickedFeature;
+            if (Cesium.defined(pickedFeature.color)) { // 确保feature有color属性
+                Cesium.Color.clone(pickedFeature.color, highlighted.originalColor);
+                pickedFeature.color = Cesium.Color.YELLOW; // 设置为高亮颜色，例如黄色
+            }
+        }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
+
+    </script>
+</body>
+
+</html>

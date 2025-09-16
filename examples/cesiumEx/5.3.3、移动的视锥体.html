@@ -1,0 +1,108 @@
+<!--********************************************************************
+* by jiawanlong
+*********************************************************************-->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="./../../libs/cesium/Cesium1.98/Widgets/widgets.css" />
+    <script type="text/javascript" src="./../../libs/cesium/Cesium1.98/Cesium.js"></script>
+</head>
+
+<body style="
+      margin: 0;
+      overflow: hidden;
+      background: #fff;
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      top: 0;
+    ">
+    <div id="map" style="margin: 0 auto; width: 100%; height: 100%"></div>
+
+    <!-- ./video.mp4 -->
+    <script type="text/javascript">
+        Cesium.Ion.defaultAccessToken =
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIwNDljNWFmZC03MzRlLTRiMDMtYWIwMi00Yjk4YWQ4NzQwZGEiLCJpZCI6MjU5LCJpYXQiOjE3NTEzNzkyMzR9.OTqPNs3UGNnT1LYkPTavV80wN8Es_YphpJgQcpdnqWc";
+        const viewer = new Cesium.Viewer("map", {});
+   // 地图视野定位
+   viewer.camera.setView({
+            destination: Cesium.Cartesian3.fromDegrees(-75.59777, 40.03883, 3000),
+        });
+
+        let primitive;
+
+        let positions = {
+            x: -75.59777,
+            y: 40.03883,
+            z: 3000
+        }
+        initFrustum();
+
+        function initFrustum() {
+            // 初始参数
+            const fov = 45;
+            const aspectRatio = 1920 / 1080;
+            const near = 1.0;
+            const far = 2000.0;
+
+            var position = Cesium.Cartesian3.fromDegrees(positions.x, positions.y, positions.z);
+            var heading = Cesium.Math.toRadians(0);
+            var pitch = Cesium.Math.toRadians(0);
+            var roll = Cesium.Math.toRadians(135);
+
+            var hpr = new Cesium.HeadingPitchRoll(heading, pitch, roll);
+            var orientation = Cesium.Transforms.headingPitchRollQuaternion(
+                position,
+                hpr
+            );
+
+            const frustum = new Cesium.PerspectiveFrustum({
+                fov: Cesium.Math.toRadians(fov),
+                aspectRatio: aspectRatio,
+                near: near,
+                far: far
+            });
+
+            const instanceGeo = new Cesium.GeometryInstance({
+                geometry: new Cesium.FrustumGeometry({
+                    frustum: frustum,
+                    origin: Cesium.Cartesian3.ZERO, // 原点
+                    // orientation: Cesium.Quaternion.IDENTITY, // 初始无旋转
+                    orientation: orientation,
+                    vertexFormat: Cesium.VertexFormat.POSITION_ONLY
+                }),
+                attributes: {
+                    color: Cesium.ColorGeometryInstanceAttribute.fromColor(
+                        new Cesium.Color(1.0, 0.0, 0.0, 0.3)
+                    )
+                }
+            });
+
+            const initialModelMatrix = Cesium.Transforms.eastNorthUpToFixedFrame(position);
+
+            primitive = viewer.scene.primitives.add(new Cesium.Primitive({
+                geometryInstances: instanceGeo,
+                appearance: new Cesium.PerInstanceColorAppearance({
+                    translucent: true,
+                    closed: true
+                }),
+                modelMatrix: initialModelMatrix // 初始位置矩阵
+            }));
+
+            animate();
+
+        }
+
+        function animate() {
+            positions.y += 0.0001;
+            var newPosition = Cesium.Cartesian3.fromDegrees(positions.x, positions.y, positions.z);
+            primitive.modelMatrix = Cesium.Transforms.eastNorthUpToFixedFrame(newPosition);
+            requestAnimationFrame(animate);
+        }
+      
+    </script>
+</body>
+
+</html>
